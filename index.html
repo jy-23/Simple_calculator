@@ -10,38 +10,36 @@
 <body>
     <div class="body-container">
         <div class="display-container">
-            <div class="display">
-                <p>0123456</p>
-            </div>
+            <p id="display"></p>
         </div>
         <div class="buttons-container">
             <div class="row1">
-                <button>C</button>
-                <button>DEL</button>
-                <button>/</button>
+                <button id="clear-button">C</button>
+                <button id="delete-button">DEL</button>
+                <button class="operator-button" value="/">/</button>
             </div>
             <div class="row2">
-                <button>7</button>
-                <button>8</button>
-                <button>9</button>
-                <button>x</button>
+                <button class="num-button">7</button>
+                <button class="num-button">8</button>
+                <button class="num-button">9</button>
+                <button class="operator-button" value="*">x</button>
             </div>
             <div class="row3">
-                <button>4</button>
-                <button>5</button>
-                <button>6</button>
-                <button>-</button>
+                <button class="num-button">4</button>
+                <button class="num-button">5</button>
+                <button class="num-button">6</button>
+                <button class="operator-button" value="-">-</button>
             </div>
             <div class="row4">
-                <button>1</button>
-                <button>2</button>
-                <button>3</button>
-                <button>+</button>
+                <button class="num-button">1</button>
+                <button class="num-button">2</button>
+                <button class="num-button">3</button>
+                <button class="operator-button" value="+">+</button>
             </div>
             <div class="row5">
-                <button>0</button>
-                <button>.</button>
-                <button>=</button>
+                <button class="num-button">0</button>
+                <button id="decimal-button">.</button>
+                <button id="equal-button">=</button>
             </div>
         </div>
     </div>
