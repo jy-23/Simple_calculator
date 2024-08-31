@@ -1,6 +1,7 @@
 // create needed variables
 let firstNum = undefined;
 let secondNum = undefined;
+let prevSecondNum = undefined;
 let operator = undefined;
 let prevButton = undefined;
 
@@ -43,6 +44,7 @@ function operate(operator,num1,num2) {
 // num clicked on is displayed
 numButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
+        // if enter new num after initial calc, reset all values
         if (prevButton === "equal-button") {
             clear();
         }
@@ -50,7 +52,11 @@ numButtons.forEach((button) => {
             displayValue.textContent = "";
             newNumStart = false;
         }
-        displayValue.textContent += event.target.textContent;
+        // make sure number is no more than 14 digits
+        if (displayValue.textContent.length < 14) {
+            displayValue.textContent += event.target.textContent;
+        }
+        
         prevButton = button.getAttribute("class");
     });
 });
@@ -58,11 +64,26 @@ numButtons.forEach((button) => {
 // operator clicked on is stored in operator variable
 operatorButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-        if (prevButton === "equal-button") {
+        // second operator button
+        if (displayValue.textContent !== "") {
+            if (firstNum !== undefined && prevButton !== "equal-button") {
+                
+                secondNum = parseInt(displayValue.textContent);
+                
+                calculate();
+            }
+            else {
+                firstNum = parseInt(displayValue.textContent);
+            }
+            newNumStart = true;
+            operator = button.value;
+        }
+        
+        /*if (prevButton === "equal-button") {
             operator = button.value;
         }
         // second operator button
-        else if (operator !== undefined) {
+        if (operator !== undefined) {
             calculate();
             operator = button.value;
         }
@@ -71,17 +92,25 @@ operatorButtons.forEach((button) => {
             firstNum = parseInt(displayValue.textContent);
             operator = button.value;
         }
-        else if (secondNum === undefined) {
+        else {
+            //secondNum = parseInt(displayValue.textContent);
             operator = button.value;
             calculate();
-        }
-        newNumStart = true;
+        }*/
         prevButton = button.getAttribute("class");
     });
 });
 
-
 equalButton.addEventListener("click", (event) => {
+    // if first num is not pressed, do nothing
+    // if second num is not pressed, second num = first num
+    // if operator not pressed, do previous operation
+    if (prevButton = "operator-button") {
+        if (secondNum === undefined) secondNum = firstNum;
+    }
+    else if (displayValue.textContent !== "") {
+        secondNum = parseInt(displayValue.textContent);
+    }
     calculate();
     newNumStart = true;
     prevButton = equalButton.getAttribute("id");
@@ -95,9 +124,11 @@ clearButton.addEventListener("click", (event) => {
 });
 
 function calculate() {
-    secondNum = parseInt(displayValue.textContent);
+    /*if (displayValue.textContent !== "") {
+        secondNum = parseInt(displayValue.textContent);
+    }*/
+    
     firstNum = operate(operator, firstNum, secondNum);
-    secondNum = undefined;
     displayValue.textContent = firstNum;
 }
 
@@ -109,4 +140,5 @@ function clear() {
     displayValue.textContent = "";
     newNumStart = true;
     prevButton = undefined;
+    prevSecondNum = undefined;
 }
