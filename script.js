@@ -1,7 +1,6 @@
 // create needed variables
 let firstNum = undefined;
 let secondNum = undefined;
-let prevSecondNum = undefined;
 let operator = undefined;
 let prevButton = undefined;
 
@@ -31,7 +30,10 @@ function multiply(num1,num2) {
 }
 
 function divide(num1,num2) {
-    return num1 / num2;
+    if (num2 === 0) {
+        return "ERROR";
+    }
+    else return num1 / num2;
 }
 
 function operate(operator,num1,num2) {
@@ -47,13 +49,14 @@ numButtons.forEach((button) => {
         // if enter new num after initial calc, reset all values
         if (prevButton === "equal-button") {
             clear();
+            displayValue.textContent = "";
         }
         if (newNumStart) {
             displayValue.textContent = "";
             newNumStart = false;
         }
         // make sure number is no more than 14 digits
-        if (displayValue.textContent.length < 14) {
+        if (displayValue.textContent.length < 13) {
             displayValue.textContent += event.target.textContent;
         }
         
@@ -65,7 +68,7 @@ numButtons.forEach((button) => {
 operatorButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
         // second operator button
-        if (displayValue.textContent !== "") {
+        if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
             if (firstNum !== undefined && prevButton === "num-button") {
                 secondNum = parseInt(displayValue.textContent);
                 calculate();
@@ -84,31 +87,42 @@ equalButton.addEventListener("click", (event) => {
     // if first num is not pressed, do nothing
     // if second num is not pressed, second num = first num
     // if operator not pressed, do previous operation
-    if (prevButton === "operator-button" || prevButton === "equal-button") {
-        if (secondNum === undefined) secondNum = firstNum;
+    if (firstNum === undefined) return;
+    else if (prevButton === "operator-button") {
+        secondNum = firstNum;
     }
-    else if (displayValue.textContent !== "") {
+    else if (prevButton === "equal-button") {}
+    else if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
         secondNum = parseInt(displayValue.textContent);
     }
     calculate();
     newNumStart = true;
     prevButton = equalButton.getAttribute("id");
-
 });
 
 // eventListener for clear button
 clearButton.addEventListener("click", (event) => {
     clear();
+    displayValue.textContent = "";
     //deSelectOperatorButton();
 });
 
-function calculate() {
-    /*if (displayValue.textContent !== "") {
-        secondNum = parseInt(displayValue.textContent);
-    }*/
-    
+function calculate() {    
     firstNum = operate(operator, firstNum, secondNum);
+    answerString = firstNum.toString();
+    
+    if (answerString.length > 13) {
+        if (firstNum <= 9999999999999 && firstNum >= 0.000006) {
+            firstNum = parseFloat(answerString.slice(0,13));
+        }
+        else {
+            firstNum = firstNum.toExponential(8);
+        }
+    }
     displayValue.textContent = firstNum;
+    if (firstNum === "ERROR") {
+        clear();
+    }
 }
 
 function clear() {
@@ -116,8 +130,6 @@ function clear() {
     secondNum = undefined;
     operator = undefined;
     currOperatorButton = undefined;
-    displayValue.textContent = "";
     newNumStart = true;
     prevButton = undefined;
-    prevSecondNum = undefined;
 }
