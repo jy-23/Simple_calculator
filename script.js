@@ -103,6 +103,13 @@ function equalEvent(event) {
     prevButton = "equal-button";
 }
 
+function delEvent(event) {
+    if (displayValue.textContent !== "" && prevButton === "num-button") {
+        let length = displayValue.textContent.length;
+        displayValue.textContent = displayValue.textContent.slice(0,length-1);
+    }
+}
+
 document.addEventListener("keyup", (event) => {
     if (event.key >= 0 && event.key <= 9) {
         numEvent(event);
@@ -115,6 +122,9 @@ document.addEventListener("keyup", (event) => {
     }
     else if (event.key === "=") {
         equalEvent(event);
+    }
+    else if (event.key === "Backspace") {
+        delEvent(event);
     }
 });
 
@@ -139,6 +149,8 @@ clearButton.addEventListener("click", (event) => {
     displayValue.textContent = "";
     //deSelectOperatorButton();
 });
+
+deleteButton.addEventListener("click", delEvent);
 
 function calculate() {    
     firstNum = operate(operator, firstNum, secondNum);
