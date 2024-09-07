@@ -43,48 +43,51 @@ function operate(operator,num1,num2) {
     else if (operator === "/") return divide(num1,num2);
 }
 
-// num clicked on is displayed
-numButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-        // if enter new num after initial calc, reset all values
-        if (prevButton === "equal-button") {
-            clear();
-            displayValue.textContent = "";
-        }
-        if (newNumStart) {
-            displayValue.textContent = "";
-            newNumStart = false;
-        }
-        // make sure number is no more than 14 digits
-        if (displayValue.textContent.length < 13) {
+// Event Functions
+function numEvent(event) {
+    if (prevButton === "equal-button") {
+        clear();
+        displayValue.textContent = "";
+    }
+    if (newNumStart) {
+        displayValue.textContent = "";
+        newNumStart = false;
+    }
+    // make sure number is no more than 14 digits
+    if (displayValue.textContent.length < 13) {
+        if (event.type === "click") {
             displayValue.textContent += event.target.textContent;
         }
-        
-        prevButton = button.getAttribute("class");
-    });
-});
-
-// operator clicked on is stored in operator variable
-operatorButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-        // second operator button
-        if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
-            if (firstNum !== undefined && prevButton === "num-button") {
-                secondNum = parseInt(displayValue.textContent);
-                calculate();
-            }
-            else {
-                firstNum = parseInt(displayValue.textContent);
-            }
-            newNumStart = true;
-            operator = button.value;
+        else if (event.type === "keyup") {
+            displayValue.textContent += event.key;
         }
-        prevButton = button.getAttribute("class");
-    });
-});
+        
+    }
+    prevButton = "num-button";
+}
 
-equalButton.addEventListener("click", (event) => {
-    // if first num is not pressed, do nothing
+function operatorEvent(event) {
+    if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
+        if (firstNum !== undefined && prevButton === "num-button") {
+            secondNum = parseInt(displayValue.textContent);
+            calculate();
+        }
+        else {
+            firstNum = parseInt(displayValue.textContent);
+        }
+        newNumStart = true;
+        if (event.type === "click") {
+            operator = event.target.value;
+        }
+        else if (event.type === "keyup") {
+            operator = event.key;
+        }        
+    }
+    prevButton = "operator-button";
+}
+
+function equalEvent(event) {
+        // if first num is not pressed, do nothing
     // if second num is not pressed, second num = first num
     // if operator not pressed, do previous operation
     if (firstNum === undefined) return;
@@ -97,8 +100,38 @@ equalButton.addEventListener("click", (event) => {
     }
     calculate();
     newNumStart = true;
-    prevButton = equalButton.getAttribute("id");
+    prevButton = "equal-button";
+}
+
+document.addEventListener("keyup", (event) => {
+    if (event.key >= 0 && event.key <= 9) {
+        numEvent(event);
+    }
+    else if (event.key === "+" || 
+        event.key === "-" || 
+        event.key === "*" || 
+        event.key === "/") {
+        operatorEvent(event);
+    }
+    else if (event.key === "=") {
+        equalEvent(event);
+    }
 });
+
+// num clicked on is displayed
+numButtons.forEach((button) => {
+    button.addEventListener("click", numEvent);
+});
+
+
+
+
+// operator clicked on is stored in operator variable
+operatorButtons.forEach((button) => {
+    button.addEventListener("click", operatorEvent);
+});
+
+equalButton.addEventListener("click", equalEvent);
 
 // eventListener for clear button
 clearButton.addEventListener("click", (event) => {
