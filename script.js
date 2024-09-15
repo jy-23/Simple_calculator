@@ -15,6 +15,7 @@ const decimalButton = document.querySelector("#decimal-button");
 
 currOperatorButton = undefined;
 newNumStart = true;
+decimalAdded = false;
 
 // basic math functions
 function add(num1,num2) {
@@ -56,10 +57,12 @@ function numEvent(event) {
     // make sure number is no more than 14 digits
     if (displayValue.textContent.length < 13) {
         if (event.type === "click") {
-            displayValue.textContent += event.target.textContent;
+            if (event.target.textContent === "." && decimalAdded) {}
+            else displayValue.textContent += event.target.textContent;
         }
         else if (event.type === "keyup") {
-            displayValue.textContent += event.key;
+            if (event.target.textContent === "." && decimalAdded) {}
+            else displayValue.textContent += event.key;
         }
         
     }
@@ -67,23 +70,25 @@ function numEvent(event) {
 }
 
 function operatorEvent(event) {
-    if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
+    if (displayValue.textContent !== "" && displayValue.textContent !== "." && displayValue.textContent !== "ERROR") {
         if (firstNum !== undefined && prevButton === "num-button") {
-            secondNum = parseInt(displayValue.textContent);
+            secondNum = parseFloat(displayValue.textContent);
             calculate();
         }
         else {
-            firstNum = parseInt(displayValue.textContent);
+            firstNum = parseFloat(displayValue.textContent);
         }
         newNumStart = true;
+        decimalAdded = false;
         if (event.type === "click") {
             operator = event.target.value;
         }
         else if (event.type === "keyup") {
             operator = event.key;
         }        
+        prevButton = "operator-button";
     }
-    prevButton = "operator-button";
+    
 }
 
 function equalEvent(event) {
@@ -96,17 +101,32 @@ function equalEvent(event) {
     }
     else if (prevButton === "equal-button") {}
     else if (displayValue.textContent !== "" && displayValue.textContent !== "ERROR") {
-        secondNum = parseInt(displayValue.textContent);
+        secondNum = parseFloat(displayValue.textContent);
     }
     calculate();
     newNumStart = true;
+    decimalAdded = false;
     prevButton = "equal-button";
 }
 
 function delEvent(event) {
-    if (displayValue.textContent !== "" && prevButton === "num-button") {
+    if (displayValue.textContent !== "" && (prevButton === "num-button" || displayValue.textContent === ".")) {
         let length = displayValue.textContent.length;
+        if (displayValue.textContent.slice(-1) === ".") {
+            decimalAdded = false;
+        }
         displayValue.textContent = displayValue.textContent.slice(0,length-1);
+    }
+}
+
+function decimalEvent(event) {
+    if (!decimalAdded) {
+        /*if (prevButton != "num-button") {
+            newNumStart = true;
+        }*/
+        //displayValue.textContent += ".";
+        decimalAdded = true;
+        //prevButton = "num-button";
     }
 }
 
@@ -126,15 +146,15 @@ document.addEventListener("keyup", (event) => {
     else if (event.key === "Backspace") {
         delEvent(event);
     }
+    else if (event.key === ".") {
+        decimalEvent(event);
+    }
 });
 
 // num clicked on is displayed
 numButtons.forEach((button) => {
     button.addEventListener("click", numEvent);
 });
-
-
-
 
 // operator clicked on is stored in operator variable
 operatorButtons.forEach((button) => {
@@ -151,6 +171,10 @@ clearButton.addEventListener("click", (event) => {
 });
 
 deleteButton.addEventListener("click", delEvent);
+
+decimalButton.addEventListener("click", decimalEvent);
+
+
 
 function calculate() {    
     firstNum = operate(operator, firstNum, secondNum);
@@ -177,4 +201,5 @@ function clear() {
     currOperatorButton = undefined;
     newNumStart = true;
     prevButton = undefined;
+    decimalAdded = false;
 }
