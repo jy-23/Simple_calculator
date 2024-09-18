@@ -3,6 +3,7 @@ let firstNum = undefined;
 let secondNum = undefined;
 let operator = undefined;
 let prevButton = undefined;
+let currOp = undefined;
 
 // store html values into variables
 displayValue = document.querySelector("#display");
@@ -69,8 +70,22 @@ function numEvent(event) {
     prevButton = "num-button";
 }
 
+function toogleOperatorOff() {
+    if (currOp !== undefined) {
+        currOp.classList.remove("highlight");
+    }
+}
+
+function toogleOperatorOn(event) {
+    currOp = event.currentTarget;
+    currOp.classList.add("highlight");
+}
+
 function operatorEvent(event) {
     if (displayValue.textContent !== "" && displayValue.textContent !== "." && displayValue.textContent !== "ERROR") {
+        // if click, add class to highlight button
+        toogleOperatorOff();
+        toogleOperatorOn(event);
         if (firstNum !== undefined && prevButton === "num-button") {
             secondNum = parseFloat(displayValue.textContent);
             calculate();
@@ -107,6 +122,7 @@ function equalEvent(event) {
     newNumStart = true;
     decimalAdded = false;
     prevButton = "equal-button";
+    toogleOperatorOff();
 }
 
 function delEvent(event) {
@@ -202,4 +218,5 @@ function clear() {
     newNumStart = true;
     prevButton = undefined;
     decimalAdded = false;
+    toogleOperatorOff();
 }

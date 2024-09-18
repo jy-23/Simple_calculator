@@ -57,6 +57,10 @@
     border-radius: 5%;
     
 }
+/*
+.button:hover {
+    background-color: lightgray;
+}*/
 
 #delete-button {
     flex-grow: 2;
@@ -66,3 +70,6 @@
     flex-grow: 2;
 }
 
+.highlight {
+    background-color: gray;
+}
