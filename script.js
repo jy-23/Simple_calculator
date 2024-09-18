@@ -20,22 +20,22 @@ decimalAdded = false;
 
 // basic math functions
 function add(num1,num2) {
-    return num1 + num2;
+    return Number(Math.round(num1 + num2 +'e13') + "e-13");
 }
 
 function subtract(num1,num2) {
-    return num1 - num2;
+    return Number(Math.round(num1 - num2 + 'e13') + "e-13");
 }
 
 function multiply(num1,num2) {
-    return num1*num2;
+    return Number(Math.round(num1*num2 + 'e13') + "e-13");
 }
 
 function divide(num1,num2) {
     if (num2 === 0) {
         return "ERROR";
     }
-    else return num1 / num2;
+    else return Number(Math.round(num1 / num2 + 'e13') + "e-13");
 }
 
 function operate(operator,num1,num2) {
@@ -55,7 +55,7 @@ function numEvent(event) {
         displayValue.textContent = "";
         newNumStart = false;
     }
-    // make sure number is no more than 14 digits
+    // make sure number is no more than 13 digits
     if (displayValue.textContent.length < 13) {
         if (event.type === "click") {
             if (event.target.textContent === "." && decimalAdded) {}
